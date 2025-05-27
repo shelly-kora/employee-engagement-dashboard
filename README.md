@@ -2,6 +2,12 @@
 
 一个现代化的员工敬业度和满意度数据可视化仪表板，采用Power BI风格设计，提供交互式数据分析和智能问答功能。
 
+## 🌐 在线访问
+
+**GitHub Pages部署版本**：https://shelly-kora.github.io/employee-engagement-dashboard/
+
+> 💡 推荐使用GitHub Pages版本，加载速度更快，功能更稳定
+
 ## 🌟 功能特性
 
 ### 📊 数据可视化
@@ -36,12 +42,13 @@
 ## 🚀 快速开始
 
 ### 在线访问
-直接访问部署版本：[https://mcp.edgeone.site/share/Q8F-fzMCe43aJLVACn8si](https://mcp.edgeone.site/share/Q8F-fzMCe43aJLVACn8si)
+- **GitHub Pages**：[https://shelly-kora.github.io/employee-engagement-dashboard/](https://shelly-kora.github.io/employee-engagement-dashboard/)
+- **备用链接**：[https://mcp.edgeone.site/share/Q8F-fzMCe43aJLVACn8si](https://mcp.edgeone.site/share/Q8F-fzMCe43aJLVACn8si)
 
 ### 本地运行
 1. 克隆项目
 ```bash
-git clone https://github.com/yourusername/employee-engagement-dashboard.git
+git clone https://github.com/shelly-kora/employee-engagement-dashboard.git
 cd employee-engagement-dashboard
 ```
 
@@ -58,15 +65,23 @@ python -m http.server 8000
 
 ```
 employee-engagement-dashboard/
-├── index.html              # 主仪表板文件
-├── README.md               # 项目说明
-├── LICENSE                 # 开源协议
-├── CHANGELOG.md            # 版本更新日志
-├── docs/                   # 文档目录
-│   ├── screenshots/        # 界面截图
-│   └── user-guide.md       # 用户指南
-└── data/                   # 数据文件
-    └── sample-data.xlsx    # 示例数据文件
+├── index.html                    # 主入口页面（仪表板导航）
+├── dashboard_premium.html        # 🌟 高级版仪表板（推荐）
+├── dashboard_final.html          # 📈 完整版仪表板
+├── dashboard_optimized.html      # ⚡ 优化版仪表板
+├── dashboard_clean.html          # 🎯 简洁版仪表板
+├── dashboard_fixed.html          # 🔧 修复版仪表板
+├── dashboard_updated.html        # 🆕 更新版仪表板
+├── dashboard.html                # 📊 基础版仪表板
+├── process_employee_survey.py    # 🐍 数据处理脚本
+├── 初始数据.xlsx                 # 📋 原始调研数据
+├── 员工敬满度分析/               # 📈 详细分析数据
+├── README.md                     # 📖 项目说明
+├── LICENSE                       # ⚖️ 开源协议
+├── CHANGELOG.md                  # 📝 版本更新日志
+├── requirements.txt              # 🐍 Python依赖
+├── .github/workflows/deploy.yml  # 🚀 自动部署配置
+└── .gitignore                    # 🚫 Git忽略文件
 ```
 
 ## 🎨 界面预览
@@ -99,7 +114,30 @@ employee-engagement-dashboard/
 - **图表库**：Chart.js
 - **样式框架**：自定义CSS（Power BI风格）
 - **数据处理**：XLSX.js（Excel文件解析）
-- **部署平台**：EdgeOne Pages
+- **部署平台**：GitHub Pages + EdgeOne Pages
+- **自动部署**：GitHub Actions
+
+## 🚀 部署说明
+
+### GitHub Pages自动部署
+本项目配置了GitHub Actions自动部署：
+- 每次推送到`main`分支时自动触发部署
+- 部署到GitHub Pages：https://shelly-kora.github.io/employee-engagement-dashboard/
+- 支持自定义域名配置
+
+### 手动部署到其他平台
+```bash
+# 部署到Vercel
+npx vercel --prod
+
+# 部署到Netlify
+npm install -g netlify-cli
+netlify deploy --prod --dir .
+
+# 部署到GitHub Pages（手动）
+git checkout -b gh-pages
+git push origin gh-pages
+```
 
 ## 📊 数据更新
 
@@ -135,9 +173,14 @@ Excel文件应包含以下列：
 
 - 项目维护者：心动网络
 - 邮箱：support@xindong.com
-- 项目地址：https://github.com/yourusername/employee-engagement-dashboard
+- 项目地址：https://github.com/shelly-kora/employee-engagement-dashboard
 
 ## 🔄 版本历史
+
+### v1.1.0 (2024-12-19)
+- 🚀 添加GitHub Pages自动部署
+- 🎯 创建仪表板导航入口页面
+- ⚡ 优化项目结构和文档
 
 ### v1.0.0 (2024-12-19)
 - ✨ 初始版本发布
