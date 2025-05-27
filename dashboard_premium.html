@@ -826,22 +826,6 @@
             </div>
             
             <div id="department-grid" class="department-grid"></div>
-            
-            <table class="data-table" style="margin-top: 24px;">
-                <thead>
-                    <tr>
-                        <th>部门名称</th>
-                        <th>填写人数</th>
-                        <th>敬业度</th>
-                        <th>满意度</th>
-                        <th>公司认同</th>
-                        <th>工作满意</th>
-                        <th>推荐意愿</th>
-                        <th>高效比例</th>
-                    </tr>
-                </thead>
-                <tbody id="detail-tbody"></tbody>
-            </table>
         </div>
     </div>
     
@@ -1099,7 +1083,6 @@
             ];
             
             updateDepartmentGrid();
-            updateDetailTable();
         }
         
         function updateDepartmentGrid() {
@@ -1131,32 +1114,6 @@
                     </div>
                 `;
                 grid.appendChild(card);
-            });
-        }
-        
-        function updateDetailTable() {
-            const tbody = document.getElementById('detail-tbody');
-            tbody.innerHTML = '';
-            
-            departmentData.forEach(dept => {
-                const row = document.createElement('tr');
-                const getBadge = (value) => {
-                    if (value >= 70) return `<span class="metric-badge badge-excellent">${value}%</span>`;
-                    if (value >= 50) return `<span class="metric-badge badge-good">${value}%</span>`;
-                    return `<span class="metric-badge badge-poor">${value}%</span>`;
-                };
-                
-                row.innerHTML = `
-                    <td>${dept.name}</td>
-                    <td>${dept.count}</td>
-                    <td>${getBadge(dept.engagement)}</td>
-                    <td>${getBadge(dept.satisfaction)}</td>
-                    <td>${getBadge(Math.round(dept.satisfaction * 0.9))}</td>
-                    <td>${getBadge(Math.round(dept.satisfaction * 0.95))}</td>
-                    <td>${getBadge(Math.round(dept.engagement * 0.8))}</td>
-                    <td>${getBadge(dept.efficiency)}</td>
-                `;
-                tbody.appendChild(row);
             });
         }
         
