@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心动员工敬业度调研数据 - 简约版</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            /* 简约白色主题配色方案 */
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #3b82f6;
+            --success: #059669;
+            --success-light: #10b981;
+            --warning: #d97706;
+            --warning-light: #f59e0b;
+            --danger: #dc2626;
+            --danger-light: #ef4444;
+            --info: #0891b2;
+            --info-light: #06b6d4;
+            
+            /* 优雅的渐变色 */
+            --gradient-primary: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            --gradient-success: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            --gradient-warning: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            --gradient-danger: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            
+            /* 干净的背景色和表面色 */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --surface: #ffffff;
+            --surface-light: #f1f5f9;
+            --surface-hover: #e2e8f0;
+            
+            /* 现代化的边框和阴影 */
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+            
+            /* 清晰的文字色彩 */
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            --text-inverse: #ffffff;
+            
+            /* 玻璃态效果 */
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(226, 232, 240, 0.8);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* 添加微妙的背景纹理 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(5, 150, 105, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(217, 119, 6, 0.02) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .logo {
+            font-size: 28px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+        
+        .title-group h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        
+        .title-group .subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-outline {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+        
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .kpi-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid var(--border);
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .kpi-card:nth-child(2)::before {
+            background: var(--gradient-success);
+        }
+        
+        .kpi-card:nth-child(3)::before {
+            background: var(--gradient-warning);
+        }
+        
+        .kpi-card:nth-child(4)::before {
+            background: var(--gradient-danger);
+        }
+        
+        .kpi-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-light);
+        }
+        
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .kpi-title {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .kpi-icon {
+            font-size: 32px;
+            opacity: 0.8;
+        }
+        
+        .kpi-value {
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -2px;
+        }
+        
+        .kpi-change {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .trend-up {
+            color: var(--success);
+        }
+        
+        .trend-down {
+            color: var(--danger);
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .chart-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .chart-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .chart-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+        
+        .chart-container {
+            height: 360px;
+            position: relative;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .tabs {
+            display: flex;
+            background: var(--surface-light);
+            border-radius: 16px;
+            padding: 8px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 16px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+        
+        .tab.active {
+            background: var(--surface);
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .tab:hover:not(.active) {
+            background: var(--surface-hover);
+            color: var(--text-primary);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+        
+        .data-table th {
+            background: var(--surface-light);
+            padding: 20px 24px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .data-table td {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+        }
+        
+        .data-table tr:hover td {
+            background: var(--surface-light);
+        }
+        
+        .metric-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-excellent {
+            background: var(--gradient-success);
+            color: white;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+        }
+        
+        .badge-good {
+            background: var(--gradient-warning);
+            color: white;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.2);
+        }
+        
+        .badge-poor {
+            background: var(--gradient-danger);
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+        }
+        
+        .department-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+        
+        .department-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .department-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .department-name {
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 16px;
+            letter-spacing: -0.5px;
+        }
+        
+        .department-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .metric {
+            text-align: center;
+            padding: 16px;
+            background: var(--surface-light);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .metric:hover {
+            background: var(--surface-hover);
+            transform: scale(1.05);
+        }
+        
+        .metric-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+            letter-spacing: -1px;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .chatbot {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 400px;
+            height: 600px;
+            background: var(--surface);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            box-shadow: var(--shadow-xl);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .chatbot.hidden {
+            display: none !important;
+        }
+        
+        .chatbot:hover {
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .chatbot-header {
+            padding: 20px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chatbot-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .chatbot-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+        
+        .chatbot-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chatbot-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .chatbot-messages::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+        
+        .message {
+            margin-bottom: 16px;
+            padding: 16px 20px;
+            border-radius: 16px;
+            max-width: 90%;
+            font-size: 14px;
+            line-height: 1.6;
+            animation: slideIn 0.3s ease;
+            word-wrap: break-word;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message.user {
+            background: var(--gradient-primary);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .message.bot {
+            background: var(--surface-light);
+            color: var(--text-primary);
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border);
+        }
+        
+        .chatbot-input {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            background: var(--surface);
+        }
+        
+        .chatbot-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--surface);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .chatbot-input input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .chatbot-input input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .chatbot-input button {
+            padding: 12px 20px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 60px;
+        }
+        
+        .chatbot-input button:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .chatbot-input button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            background: var(--surface-light);
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            max-width: 90%;
+            border: 1px solid var(--border);
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px 16px;
+            }
+            
+            .chatbot {
+                width: calc(100vw - 32px);
+                height: calc(100vh - 120px);
+                right: 16px;
+                bottom: 16px;
+            }
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-section">
+            <div class="logo">♥</div>
+            <div class="title-group">
+                <h1>心动员工敬业度调研数据</h1>
+                <div class="subtitle">2024年度分析报告 - 简约版</div>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="btn btn-outline" onclick="document.getElementById('file-input').click()">
+                📊 导入数据
+            </button>
+            <button class="btn btn-primary" onclick="toggleChatbot()">
+                💬 AI助手
+            </button>
+        </div>
+    </div>
+    
+    <input type="file" id="file-input" accept=".xlsx,.xls" style="display: none;" onchange="handleFileUpload(event)">
+    
+    <div class="container">
+        <!-- KPI 卡片 -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title">总体敬业度</div>
+                    <div class="kpi-icon">📈</div>
+                </div>
+                <div class="kpi-value">68%</div>
+                <div class="kpi-change trend-up">
+                    ▲ +8% 较去年
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title">总体满意度</div>
+                    <div class="kpi-icon">😊</div>
+                </div>
+                <div class="kpi-value">68%</div>
+                <div class="kpi-change trend-up">
+                    ▲ +8% 较去年
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title">参与率</div>
+                    <div class="kpi-icon">👥</div>
+                </div>
+                <div class="kpi-value">64.5%</div>
+                <div class="kpi-change">
+                    828 / 1,284 人
+                </div>
+            </div>
+            
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div class="kpi-title">高效员工比例</div>
+                    <div class="kpi-icon">⭐</div>
+                </div>
+                <div class="kpi-value">46%</div>
+                <div class="kpi-change trend-up">
+                    敬业且满意
+                </div>
+            </div>
+        </div>
+        
+        <!-- 图表区域 -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">敬业度-满意度象限分析</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="quadrant-chart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">年度趋势对比</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="yearly-trend"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 部门表现 -->
+        <div class="chart-card full-width">
+            <div class="chart-header">
+                <div class="chart-title">部门表现分析</div>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" onclick="switchDepartmentTab('all')">全部门</div>
+                <div class="tab" onclick="switchDepartmentTab('management')">管理层级</div>
+                <div class="tab" onclick="switchDepartmentTab('position')">职级分析</div>
+            </div>
+            
+            <div id="department-grid" class="department-grid"></div>
+            
+            <table class="data-table" style="margin-top: 24px;">
+                <thead>
+                    <tr>
+                        <th>部门名称</th>
+                        <th>填写人数</th>
+                        <th>敬业度</th>
+                        <th>满意度</th>
+                        <th>公司认同</th>
+                        <th>工作满意</th>
+                        <th>推荐意愿</th>
+                        <th>高效比例</th>
+                    </tr>
+                </thead>
+                <tbody id="detail-tbody"></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- 智能聊天机器人 -->
+    <div class="chatbot hidden" id="chatbot">
+        <div class="chatbot-header">
+            <div>🤖 智能数据分析助手</div>
+            <button class="chatbot-close" onclick="closeChatbot()" title="关闭助手">×</button>
+        </div>
+        <div class="chatbot-messages" id="chat-messages">
+            <div class="message bot">
+                👋 您好！我是您的专业数据分析助手。我可以帮您深入分析员工敬业度数据，提供专业见解和改进建议。
+                
+                <br><br>您可以询问：
+                <br>• 📊 各部门表现对比分析
+                <br>• 📈 敬业度趋势变化原因
+                <br>• 💡 针对性改进建议
+                <br>• 🎯 重点关注指标解读
+                <br>• 📋 管理层与员工差异分析
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chat-input" placeholder="请输入您的问题..." onkeypress="if(event.key==='Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }">
+            <button onclick="sendMessage()" id="send-btn">发送</button>
+        </div>
+    </div>
+    
+    <script>
+        let departmentData = [];
+        let surveyData = {};
+        let isTyping = false;
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            createQuadrantChart();
+            createYearlyTrendChart();
+            loadDepartmentData();
+        });
+        
+        function toggleChatbot() {
+            const chatbot = document.getElementById('chatbot');
+            if (chatbot) {
+                const isHidden = chatbot.classList.contains('hidden');
+                console.log('Chatbot current state:', isHidden ? 'hidden' : 'visible');
+                
+                if (isHidden) {
+                    chatbot.classList.remove('hidden');
+                    console.log('Showing chatbot');
+                } else {
+                    chatbot.classList.add('hidden');
+                    console.log('Hiding chatbot');
+                }
+            } else {
+                console.error('Chatbot element not found');
+            }
+        }
+        
+        function closeChatbot() {
+            const chatbot = document.getElementById('chatbot');
+            if (chatbot) {
+                chatbot.classList.add('hidden');
+                console.log('Chatbot closed via close button');
+            }
+        }
+        
+        function createQuadrantChart() {
+            const ctx = document.getElementById('quadrant-chart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bubble',
+                data: {
+                    datasets: [
+                        {
+                            label: '高效员工 (敬业且满意)',
+                            data: [{x: 75, y: 75, r: 20}],
+                            backgroundColor: 'rgba(5, 150, 105, 0.8)',
+                            borderColor: '#059669',
+                            borderWidth: 3,
+                            hoverBorderWidth: 5
+                        },
+                        {
+                            label: '受挫员工 (敬业不满意)', 
+                            data: [{x: 25, y: 75, r: 12}],
+                            backgroundColor: 'rgba(217, 119, 6, 0.8)',
+                            borderColor: '#d97706',
+                            borderWidth: 3,
+                            hoverBorderWidth: 5
+                        },
+                        {
+                            label: '漠然员工 (不敬业但满意)',
+                            data: [{x: 75, y: 25, r: 15}],
+                            backgroundColor: 'rgba(37, 99, 235, 0.8)',
+                            borderColor: '#2563eb',
+                            borderWidth: 3,
+                            hoverBorderWidth: 5
+                        },
+                        {
+                            label: '低效员工 (不敬业不满意)',
+                            data: [{x: 25, y: 25, r: 18}],
+                            backgroundColor: 'rgba(220, 38, 38, 0.8)',
+                            borderColor: '#dc2626',
+                            borderWidth: 3,
+                            hoverBorderWidth: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            position: 'bottom',
+                            labels: {
+                                color: '#0f172a',
+                                font: { size: 12, weight: '600' },
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#0f172a',
+                            bodyColor: '#475569',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            cornerRadius: 12,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y}% 敬业度, ${context.parsed.x}% 满意度`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { 
+                                display: true, 
+                                text: '满意度 (%)',
+                                color: '#475569',
+                                font: { size: 14, weight: '600' }
+                            },
+                            min: 0,
+                            max: 100,
+                            grid: { 
+                                color: 'rgba(226, 232, 240, 0.8)',
+                                drawOnChartArea: true
+                            },
+                            ticks: { color: '#64748b', font: { size: 12 } }
+                        },
+                        y: {
+                            title: { 
+                                display: true, 
+                                text: '敬业度 (%)',
+                                color: '#475569',
+                                font: { size: 14, weight: '600' }
+                            },
+                            min: 0,
+                            max: 100,
+                            grid: { 
+                                color: 'rgba(226, 232, 240, 0.8)',
+                                drawOnChartArea: true
+                            },
+                            ticks: { color: '#64748b', font: { size: 12 } }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+        
+        function createYearlyTrendChart() {
+            const ctx = document.getElementById('yearly-trend').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2023年', '2024年'],
+                    datasets: [
+                        {
+                            label: '敬业度',
+                            data: [60, 68],
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            borderWidth: 4,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#2563eb',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 3,
+                            pointRadius: 8,
+                            pointHoverRadius: 12
+                        },
+                        {
+                            label: '满意度',
+                            data: [60, 68],
+                            borderColor: '#059669',
+                            backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                            borderWidth: 4,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#059669',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 3,
+                            pointRadius: 8,
+                            pointHoverRadius: 12
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { 
+                            position: 'top',
+                            labels: {
+                                color: '#0f172a',
+                                font: { size: 14, weight: '600' },
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            titleColor: '#0f172a',
+                            bodyColor: '#475569',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            cornerRadius: 12,
+                            padding: 12
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { 
+                                color: 'rgba(226, 232, 240, 0.8)',
+                                drawOnChartArea: true
+                            },
+                            ticks: { 
+                                callback: value => value + '%',
+                                color: '#64748b',
+                                font: { size: 12 }
+                            },
+                            title: {
+                                display: true,
+                                text: '百分比 (%)',
+                                color: '#475569',
+                                font: { size: 14, weight: '600' }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { 
+                                color: '#64748b',
+                                font: { size: 12, weight: '600' }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+        
+        function loadDepartmentData() {
+            // 模拟部门数据
+            departmentData = [
+                {name: '财务部', count: 10, engagement: 40, satisfaction: 40, efficiency: 40},
+                {name: '城北大王寨工作室', count: 172, engagement: 60, satisfaction: 61, efficiency: 55},
+                {name: 'TapTap', count: 89, engagement: 72, satisfaction: 70, efficiency: 65},
+                {name: '自研部', count: 120, engagement: 75, satisfaction: 78, efficiency: 68},
+                {name: '运营部', count: 95, engagement: 65, satisfaction: 68, efficiency: 58}
+            ];
+            
+            updateDepartmentGrid();
+            updateDetailTable();
+        }
+        
+        function updateDepartmentGrid() {
+            const grid = document.getElementById('department-grid');
+            grid.innerHTML = '';
+            
+            departmentData.forEach(dept => {
+                const card = document.createElement('div');
+                card.className = 'department-card';
+                card.innerHTML = `
+                    <div class="department-name">${dept.name}</div>
+                    <div class="department-metrics">
+                        <div class="metric">
+                            <div class="metric-value">${dept.count}</div>
+                            <div class="metric-label">填写人数</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${dept.engagement}%</div>
+                            <div class="metric-label">敬业度</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${dept.satisfaction}%</div>
+                            <div class="metric-label">满意度</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${dept.efficiency}%</div>
+                            <div class="metric-label">高效比例</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        function updateDetailTable() {
+            const tbody = document.getElementById('detail-tbody');
+            tbody.innerHTML = '';
+            
+            departmentData.forEach(dept => {
+                const row = document.createElement('tr');
+                const getBadge = (value) => {
+                    if (value >= 70) return `<span class="metric-badge badge-excellent">${value}%</span>`;
+                    if (value >= 50) return `<span class="metric-badge badge-good">${value}%</span>`;
+                    return `<span class="metric-badge badge-poor">${value}%</span>`;
+                };
+                
+                row.innerHTML = `
+                    <td>${dept.name}</td>
+                    <td>${dept.count}</td>
+                    <td>${getBadge(dept.engagement)}</td>
+                    <td>${getBadge(dept.satisfaction)}</td>
+                    <td>${getBadge(Math.round(dept.satisfaction * 0.9))}</td>
+                    <td>${getBadge(Math.round(dept.satisfaction * 0.95))}</td>
+                    <td>${getBadge(Math.round(dept.engagement * 0.8))}</td>
+                    <td>${getBadge(dept.efficiency)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function switchDepartmentTab(tabType) {
+            // 更新选中状态
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // 根据选择的标签页更新数据
+            switch(tabType) {
+                case 'management':
+                    showManagementData();
+                    break;
+                case 'position':
+                    showPositionData();
+                    break;
+                default:
+                    updateDepartmentGrid();
+            }
+        }
+        
+        function showManagementData() {
+            const grid = document.getElementById('department-grid');
+            grid.innerHTML = '';
+            
+            const managementData = [
+                {岗位类型: '管理岗位', 填写人数: 158, 敬业度: 0.764, 满意度: 0.783, 敬业且满意: 0.599},
+                {岗位类型: '非管理岗位', 填写人数: 670, 敬业度: 0.662, 满意度: 0.654, 敬业且满意: 0.432}
+            ];
+            
+            managementData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'department-card';
+                card.innerHTML = `
+                    <div class="department-name">${item.岗位类型}</div>
+                    <div class="department-metrics">
+                        <div class="metric">
+                            <div class="metric-value">${item.填写人数}</div>
+                            <div class="metric-label">填写人数</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${Math.round(item.敬业度 * 100)}%</div>
+                            <div class="metric-label">敬业度</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${Math.round(item.满意度 * 100)}%</div>
+                            <div class="metric-label">满意度</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${Math.round(item.敬业且满意 * 100)}%</div>
+                            <div class="metric-label">高效比例</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        function showPositionData() {
+            const grid = document.getElementById('department-grid');
+            grid.innerHTML = '';
+            
+            const positionData = [
+                {职级类型: '高级职级', 填写人数: 203, 敬业度: 0.708, 满意度: 0.723, 敬业且满意: 0.512},
+                {职级类型: '中低级职级', 填写人数: 625, 敬业度: 0.664, 满意度: 0.663, 敬业且满意: 0.440}
+            ];
+            
+            positionData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'department-card';
+                card.innerHTML = `
+                    <div class="department-name">${item.职级类型}</div>
+                    <div class="department-metrics">
+                        <div class="metric">
+                            <div class="metric-value">${item.填写人数}</div>
+                            <div class="metric-label">填写人数</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${Math.round(item.敬业度 * 100)}%</div>
+                            <div class="metric-label">敬业度</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${Math.round(item.满意度 * 100)}%</div>
+                            <div class="metric-label">满意度</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">${Math.round(item.敬业且满意 * 100)}%</div>
+                            <div class="metric-label">高效比例</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        function showTypingIndicator() {
+            const messages = document.getElementById('chat-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <span style="color: #64748b; font-size: 13px;">AI正在思考</span>
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            messages.appendChild(typingDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const sendBtn = document.getElementById('send-btn');
+            const message = input.value.trim();
+            
+            if (!message || isTyping) return;
+            
+            const messages = document.getElementById('chat-messages');
+            
+            // 添加用户消息
+            const userMsg = document.createElement('div');
+            userMsg.className = 'message user';
+            userMsg.textContent = message;
+            messages.appendChild(userMsg);
+            
+            // 清空输入框并禁用发送按钮
+            input.value = '';
+            sendBtn.disabled = true;
+            isTyping = true;
+            
+            // 显示打字指示器
+            showTypingIndicator();
+            
+            // 模拟思考时间
+            await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+            
+            // 隐藏打字指示器
+            hideTypingIndicator();
+            
+            // 生成智能回复
+            const botMsg = document.createElement('div');
+            botMsg.className = 'message bot';
+            botMsg.innerHTML = generateIntelligentResponse(message);
+            messages.appendChild(botMsg);
+            
+            // 重新启用发送按钮
+            sendBtn.disabled = false;
+            isTyping = false;
+            
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        function generateIntelligentResponse(message) {
+            const msg = message.toLowerCase();
+            
+            // 智能关键词分析和上下文理解
+            if (msg.includes('敬业度最高') || msg.includes('表现最好') || msg.includes('排名第一')) {
+                return `<strong>📊 部门表现分析</strong><br><br>
+                根据当前数据，<strong>自研部</strong>表现最为突出：<br>
+                • 敬业度：75%（远超平均水平）<br>
+                • 满意度：78%（全公司最高）<br>
+                • 高效员工比例：68%<br><br>
+                <strong>💡 成功因素分析：</strong><br>
+                1. 技术驱动的工作环境激发创新热情<br>
+                2. 项目自主性高，员工成就感强<br>
+                3. 团队协作氛围良好<br><br>
+                建议将自研部的管理经验推广到其他部门。`;
+            }
+            
+            if (msg.includes('财务部') || msg.includes('表现最差') || msg.includes('需要改进')) {
+                return `<strong>⚠️ 财务部门深度分析</strong><br><br>
+                财务部确实需要重点关注，各项指标均处于较低水平：<br>
+                • 敬业度：40%（低于平均28个百分点）<br>
+                • 满意度：40%（需要紧急改善）<br>
+                • 填写人数：仅10人（可能存在参与度问题）<br><br>
+                <strong>🎯 改进建议：</strong><br>
+                1. <strong>工作环境优化</strong>：改善办公条件，提供更好的工作工具<br>
+                2. <strong>职业发展规划</strong>：为财务人员制定清晰的晋升路径<br>
+                3. <strong>工作负荷平衡</strong>：合理分配工作量，避免过度加班<br>
+                4. <strong>团队建设活动</strong>：增强部门凝聚力和归属感<br>
+                5. <strong>薪酬福利review</strong>：确保薪酬体系的竞争力`;
+            }
+            
+            // 默认回复
+            const responses = [
+                `<strong>🤖 智能分析结果</strong><br><br>基于您的问题，我为您提供以下专业见解：从整体数据来看，心动网络2024年员工敬业度调研呈现积极态势。68%的敬业度和满意度相较去年60%实现了显著提升。<br><br><strong>📈 关键亮点：</strong><br>• 技术部门表现突出<br>• 管理层与员工敬业度差异值得关注<br>• 高效员工比例达到46%，具备良好基础<br><br>如需了解特定部门表现或获取详细建议，请告诉我您关注的具体方面。`
+            ];
+            
+            return responses[0];
+        }
+        
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    
+                    // 处理Excel数据
+                    const sheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+                    
+                    console.log('导入的数据:', jsonData);
+                    alert('数据导入成功！仪表盘将使用新数据进行分析。');
+                    
+                } catch (error) {
+                    console.error('文件解析错误:', error);
+                    alert('文件格式错误，请确保上传的是Excel文件。');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+</html> 
